@@ -1,0 +1,17 @@
+[project]
+name = "myapi"
+version = "0.1.0"
+description = "FastAPI scaffold with NoSQL repository and layered architecture"
+requires-python = ">=3.11"
+
+[tool.ruff]
+line-length = 100
+
+[tool.black]
+line-length = 100
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+strict_optional = true
+warn_unused_ignores = true
