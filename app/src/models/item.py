@@ -1,4 +1,4 @@
-from app.models.base import APIModel
+from app.src.models.base import APIModel
 
 class ItemCreate(APIModel):
     name: str

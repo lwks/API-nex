@@ -1,11 +1,11 @@
 from fastapi import FastAPI
 from motor.motor_asyncio import AsyncIOMotorClient
-from app.helpers.settings import settings
-from app.helpers.logging import configure_logging
-from app.controllers.api_v1 import api_router
-from app.services.repositories.mongo_items_repository import MongoItemsRepository
-from app.services.items_service import ItemsService
-import app.controllers.items_controller as items_controller
+from app.src.helpers.settings import settings
+from app.src.helpers.logging import configure_logging
+from app.src.controllers.api_v1 import api_router
+from app.src.services.repositories.mongo_items_repository import MongoItemsRepository
+from app.src.services.items_service import ItemsService
+import app.src.controllers.items_controller as items_controller
 
 app = FastAPI(title=settings.APP_NAME)
 configure_logging()

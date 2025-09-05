@@ -1,8 +1,8 @@
 import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
-from app.controllers.items_controller import router, get_items_service
-from app.models.item import ItemCreate, ItemUpdate
+from app.src.controllers.items_controller import router, get_items_service
+from app.src.models.item import ItemCreate, ItemUpdate
 
 class FakeService:
     def __init__(self):

@@ -1,7 +1,7 @@
 import pytest
 import asyncio
-from app.models.item import ItemCreate, ItemUpdate
-from app.services.items_service import ItemsService
+from app.src.models.item import ItemCreate, ItemUpdate
+from app.src.services.items_service import ItemsService
 
 class InMemoryRepo:
     def __init__(self):

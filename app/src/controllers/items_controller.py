@@ -1,8 +1,8 @@
 from typing import List
 from fastapi import APIRouter, Depends, Query
-from app.models.item import ItemCreate, ItemUpdate, ItemOut
-from app.helpers.pagination import Pagination
-from app.services.items_service import ItemsService
+from app.src.models.item import ItemCreate, ItemUpdate, ItemOut
+from app.src.helpers.pagination import Pagination
+from app.src.services.items_service import ItemsService
 
 router = APIRouter()
 

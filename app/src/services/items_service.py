@@ -1,6 +1,6 @@
 from typing import List, Dict, Any
-from app.services.repositories.mongo_items_repository import MongoItemsRepository
-from app.models.item import ItemCreate, ItemUpdate
+from app.src.services.repositories.mongo_items_repository import MongoItemsRepository
+from app.src.models.item import ItemCreate, ItemUpdate
 
 class ItemsService:
     def __init__(self, repo: MongoItemsRepository):
