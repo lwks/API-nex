@@ -1,8 +1,9 @@
 import pytest
 from fastapi import FastAPI
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 from app.src.controllers.items_controller import router, get_items_service
 from app.src.models.item import ItemCreate, ItemUpdate
+
 
 class FakeService:
     def __init__(self):
@@ -31,16 +32,19 @@ class FakeService:
 
     async def list(self, skip: int = 0, limit: int = 20):
         items = list(self._data.values())
-        return items[skip: skip + limit]
+        return items[skip : skip + limit]
 
-@pytest.mark.anyio
+
+@pytest.mark.anyio("asyncio")
 async def test_controller_crud():
     app = FastAPI()
+    svc = FakeService()
     # dependency override for tests
-    app.dependency_overrides[get_items_service] = lambda: FakeService()
+    app.dependency_overrides[get_items_service] = lambda: svc
     app.include_router(router, prefix="/api/v1/items")
 
-    async with AsyncClient(app=app, base_url="http://test") as ac:
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
         # create
         resp = await ac.post("/api/v1/items", json={"name": "Pen", "description": "Blue"})
         assert resp.status_code == 200

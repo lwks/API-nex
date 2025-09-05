@@ -1,7 +1,7 @@
 import pytest
-import asyncio
 from app.src.models.item import ItemCreate, ItemUpdate
 from app.src.services.items_service import ItemsService
+
 
 class InMemoryRepo:
     def __init__(self):
@@ -28,9 +28,10 @@ class InMemoryRepo:
 
     async def list(self, *, skip: int = 0, limit: int = 20):
         items = list(self.store.values())
-        return items[skip: skip + limit]
+        return items[skip : skip + limit]
 
-@pytest.mark.anyio
+
+@pytest.mark.anyio("asyncio")
 async def test_service_create_and_get():
     repo = InMemoryRepo()
     svc = ItemsService(repo)  # type: ignore[arg-type]

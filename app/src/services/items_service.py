@@ -1,9 +1,10 @@
 from typing import List, Dict, Any
-from app.src.services.repositories.mongo_items_repository import MongoItemsRepository
+from app.src.domain.repositories import RepositoryProtocol
 from app.src.models.item import ItemCreate, ItemUpdate
 
+
 class ItemsService:
-    def __init__(self, repo: MongoItemsRepository):
+    def __init__(self, repo: RepositoryProtocol):
         self.repo = repo
 
     async def create(self, payload: ItemCreate) -> str:
