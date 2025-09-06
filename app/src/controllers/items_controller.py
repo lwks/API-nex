@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Callable, Optional
 from fastapi import APIRouter, Depends, Query
 from app.src.models.item import ItemCreate, ItemUpdate, ItemOut
 from app.src.helpers.pagination import Pagination
@@ -6,9 +6,14 @@ from app.src.services.items_service import ItemsService
 
 router = APIRouter()
 
-# This provider is replaced/wired in app.main at startup.
-def get_items_service() -> ItemsService:  # pragma: no cover - replaced at runtime
-    raise NotImplementedError
+# Provider placeholder wired at runtime in app.src.main
+items_service_provider: Optional[Callable[[], ItemsService]] = None
+
+
+def get_items_service() -> ItemsService:
+    if items_service_provider is None:  # pragma: no cover - wired at runtime
+        raise RuntimeError("ItemsService provider not wired. Configure at startup.")
+    return items_service_provider()
 
 def _to_item_out(doc: dict) -> ItemOut:
     return ItemOut(id=str(doc.get("_id") or doc.get("id")), name=doc["name"], description=doc.get("description"))

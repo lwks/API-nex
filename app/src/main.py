@@ -31,9 +31,9 @@ async def startup() -> None:
     def _users_provider() -> UsersService:
         return users_svc
 
-    # simple dependency injection
-    items_controller.get_items_service = _items_provider  # type: ignore[attr-defined]
-    users_controller.get_users_service = _users_provider  # type: ignore[attr-defined]
+    # simple dependency injection via provider variables
+    items_controller.items_service_provider = _items_provider  # type: ignore[attr-defined]
+    users_controller.users_service_provider = _users_provider  # type: ignore[attr-defined]
 
 
 @app.on_event("shutdown")

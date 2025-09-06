@@ -1,3 +1,4 @@
+from typing import Callable, Optional
 from fastapi import APIRouter, Depends
 from app.src.models.user import UserCreate, UserOut
 from app.src.services.users_service import UsersService
@@ -6,8 +7,14 @@ from app.src.services.users_service import UsersService
 router = APIRouter()
 
 
-def get_users_service() -> UsersService:  # pragma: no cover - replaced at runtime
-    raise NotImplementedError
+# Provider placeholder wired at runtime in app.src.main
+users_service_provider: Optional[Callable[[], UsersService]] = None
+
+
+def get_users_service() -> UsersService:
+    if users_service_provider is None:  # pragma: no cover - wired at runtime
+        raise RuntimeError("UsersService provider not wired. Configure at startup.")
+    return users_service_provider()
 
 
 def _to_user_out(doc: dict) -> UserOut:
