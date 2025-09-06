@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 from motor.motor_asyncio import AsyncIOMotorClient
 from app.src.helpers.settings import settings
 from app.src.helpers.logging import configure_logging
@@ -10,10 +11,15 @@ from app.src.services.users_service import UsersService
 import app.src.controllers.items_controller as items_controller
 import app.src.controllers.users_controller as users_controller
 
-app = FastAPI(title=settings.APP_NAME)
+app = FastAPI(title=settings.APP_NAME, docs_url="/docs")
 configure_logging()
 
 mongo_client: AsyncIOMotorClient | None = None
+
+
+@app.get("/", include_in_schema=False)
+async def docs_redirect() -> RedirectResponse:
+    return RedirectResponse(url="/docs")
 
 
 @app.on_event("startup")
