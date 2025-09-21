@@ -30,3 +30,4 @@ tests/
 ## Notes
 - Simple DI wiring sets a singleton `ItemsService` at startup.
 - Swap storage by implementing a new repository matching `RepositoryProtocol`.
+- Configure MongoDB TLS trust by setting `MONGO_TLS_CA_FILE` (defaults to the `certifi` bundle when available).

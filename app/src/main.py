@@ -25,7 +25,11 @@ async def docs_redirect() -> RedirectResponse:
 @app.on_event("startup")
 async def startup() -> None:
     global mongo_client
-    mongo_client = AsyncIOMotorClient(settings.MONGO_URI)
+    client_options: dict[str, object] = {}
+    if settings.MONGO_TLS_CA_FILE:
+        client_options["tlsCAFile"] = settings.MONGO_TLS_CA_FILE
+
+    mongo_client = AsyncIOMotorClient(settings.MONGO_URI, **client_options)
     items_repo = MongoItemsRepository(mongo_client, settings.MONGO_DB)
     items_svc = ItemsService(items_repo)
     users_repo = MongoUsersRepository(mongo_client, settings.MONGO_DB)
