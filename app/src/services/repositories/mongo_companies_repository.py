@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClient
 
+from app.src.helpers.utils import coerce_dates_for_bson
 
 class MongoCompaniesRepository:
     def __init__(self, client: AsyncIOMotorClient, db_name: str):
@@ -23,7 +24,7 @@ class MongoCompaniesRepository:
         return await self._col.find_one({"_id": object_id})
 
     async def create(self, data: Dict[str, Any]) -> str:
-        payload = data.copy()
+        payload = coerce_dates_for_bson(data)
         company_id = payload.pop("id", None)
         if company_id is not None:
             payload["_id"] = company_id
@@ -31,14 +32,15 @@ class MongoCompaniesRepository:
         return str(res.inserted_id)
 
     async def update(self, id: str, data: Dict[str, Any]) -> bool:
-        res = await self._col.update_one({"_id": id}, {"$set": data})
+        payload = coerce_dates_for_bson(data)
+        res = await self._col.update_one({"_id": id}, {"$set": payload})
         if res.matched_count:
-            return res.modified_count > 0 or bool(data)
+            return res.modified_count > 0 or bool(payload)
         try:
             object_id = ObjectId(id)
         except Exception:
             return False
-        res = await self._col.update_one({"_id": object_id}, {"$set": data})
+        res = await self._col.update_one({"_id": object_id}, {"$set": payload})
         return res.modified_count > 0 or res.matched_count > 0
 
     async def delete(self, id: str) -> bool:
