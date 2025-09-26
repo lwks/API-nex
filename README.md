@@ -16,6 +16,7 @@ uvicorn app.src.main:app --reload
 - Items CRUD under: `/api/v1/items`
 - Users endpoints under: `/api/v1/users`
 - Companies CRUD under: `/api/v1/companies`
+- Vagas CRUD under: `/api/v1/vagas`
 
 ### Empresas (Companies) payload
 
@@ -28,6 +29,19 @@ uvicorn app.src.main:app --reload
 | `localizacao` | string | Cidade e estado                                           |
 | `criado_em`   | date   | Data de cadastro da empresa (ISO 8601, ex: `2024-01-31`) |
 | `vagas`       | array  | Lista de vagas abertas ou já encerradas                  |
+
+### Vagas payload
+
+| Campo           | Tipo   | Descrição                                                                 |
+| --------------- | ------ | ------------------------------------------------------------------------- |
+| `client_id`     | string | Referência para a empresa responsável pela vaga                          |
+| `titulo`        | string | Título da vaga (ex: `Analista de Dados`)                                  |
+| `descricao`     | string | Descrição detalhada das atividades                                       |
+| `nivel`         | string | Nível da vaga (ex: Júnior, Pleno, Sênior)                                 |
+| `localizacao`   | string | Local da vaga (cidade, estado ou `Remoto`)                                |
+| `publicada_em`  | date   | Data de publicação (ISO 8601, ex: `2024-03-10`)                            |
+| `status`        | string | Situação atual da vaga (ex: Aberta, Fechada, Em análise)                  |
+| `skills`        | array  | Lista de habilidades desejadas (ex: `["Python", "AWS", "Testes"]`)        |
 
 ## Structure
 
