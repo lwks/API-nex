@@ -53,6 +53,20 @@ uvicorn app.src.main:app --reload
 | `created_at`          | string (ISO 8601) | Data de criação do cadastro                                        |
 | `updated_at`          | string (ISO 8601) | Data da última atualização do cadastro                              |
 
+### Vagas payload
+
+| Campo           | Tipo   | Descrição                                                                 |
+| --------------- | ------ | ------------------------------------------------------------------------- |
+| `client_id`     | string | Referência para a empresa responsável pela vaga                          |
+| `titulo`        | string | Título da vaga (ex: `Analista de Dados`)                                  |
+| `descricao`     | string | Descrição detalhada das atividades                                       |
+| `nivel`         | string | Nível da vaga (ex: Júnior, Pleno, Sênior)                                 |
+| `localizacao`   | string | Local da vaga (cidade, estado ou `Remoto`)                                |
+| `publicada_em`  | date   | Data de publicação (ISO 8601, ex: `2024-03-10`)                            |
+| `status`        | string | Situação atual da vaga (ex: Aberta, Fechada, Em análise)                  |
+| `skills`        | array  | Lista de habilidades desejadas (ex: `["Python", "AWS", "Testes"]`)        |
+
+
 ## Structure
 
 ```

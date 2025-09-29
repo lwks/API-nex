@@ -2,6 +2,7 @@ from datetime import date, datetime
 
 from app.src.models.candidatura import CandidaturaOut
 from app.src.models.company import CompanyOut
+from app.src.models.vaga import VagaOut
 
 
 class FormatData:
@@ -64,4 +65,26 @@ class FormatData:
             logo_url=doc["logo_url"],
             created_at=created_at_value,
             updated_at=updated_at_value,
+
+    def vaga_out(doc: dict) -> VagaOut:
+        """Normalize a persistence document into ``VagaOut`` payload."""
+        vaga_id = str(doc.get("_id") or doc.get("id"))
+        publicada_em_value = doc.get("publicada_em")
+
+        if isinstance(publicada_em_value, str):
+            publicada_em_value = date.fromisoformat(publicada_em_value)
+        elif isinstance(publicada_em_value, datetime):
+            publicada_em_value = publicada_em_value.date()
+
+        return VagaOut(
+            id=vaga_id,
+            client_id=doc["client_id"],
+            titulo=doc["titulo"],
+            descricao=doc["descricao"],
+            nivel=doc["nivel"],
+            localizacao=doc["localizacao"],
+            publicada_em=publicada_em_value,
+            status=doc["status"],
+            skills=doc.get("skills", []),
+
         )
