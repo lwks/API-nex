@@ -16,7 +16,7 @@ uvicorn app.src.main:app --reload
 - Items CRUD under: `/api/v1/items`
 - Users endpoints under: `/api/v1/users`
 - Companies CRUD under: `/api/v1/companies`
-- Vagas CRUD under: `/api/v1/vagas`
+- Candidaturas CRUD under: `/api/v1/candidaturas`
 
 ### Empresas (Companies) payload
 
@@ -30,6 +30,29 @@ uvicorn app.src.main:app --reload
 | `criado_em`   | date   | Data de cadastro da empresa (ISO 8601, ex: `2024-01-31`) |
 | `vagas`       | array  | Lista de vagas abertas ou já encerradas                  |
 
+### Candidaturas payload
+
+| Campo                 | Tipo         | Descrição                                                             |
+| --------------------- | ------------ | --------------------------------------------------------------------- |
+| `company_id`          | string       | Identificador único da empresa associada                              |
+| `name`                | string       | Nome da empresa                                                       |
+| `email`               | string       | E-mail corporativo usado para login e contato                         |
+| `password_hash`       | string       | Hash da senha para autenticação                                       |
+| `phone`               | string       | Telefone de contato                                                   |
+| `website`             | string (URL) | Website oficial                                                       |
+| `location.city`       | string       | Cidade onde a empresa está localizada                                 |
+| `location.state`      | string       | Estado onde a empresa está localizada                                 |
+| `location.country`    | string       | País onde a empresa está localizada                                   |
+| `about`               | string       | Descrição da empresa                                                  |
+| `industry`            | string       | Setor de atuação (ex: Tecnologia, Saúde)                              |
+| `size`                | string       | Tamanho da empresa (ex: `1-10`, `11-50`, `201-500`)                   |
+| `founded_year`        | number       | Ano de fundação                                                       |
+| `social_links.linkedin` | string (URL) | Link para o LinkedIn corporativo                                      |
+| `social_links.instagram` | string (URL) | Link para o Instagram corporativo                                     |
+| `logo_url`            | string (URL) | URL com o logo da empresa                                             |
+| `created_at`          | string (ISO 8601) | Data de criação do cadastro                                        |
+| `updated_at`          | string (ISO 8601) | Data da última atualização do cadastro                              |
+
 ### Vagas payload
 
 | Campo           | Tipo   | Descrição                                                                 |
@@ -42,6 +65,7 @@ uvicorn app.src.main:app --reload
 | `publicada_em`  | date   | Data de publicação (ISO 8601, ex: `2024-03-10`)                            |
 | `status`        | string | Situação atual da vaga (ex: Aberta, Fechada, Em análise)                  |
 | `skills`        | array  | Lista de habilidades desejadas (ex: `["Python", "AWS", "Testes"]`)        |
+
 
 ## Structure
 
