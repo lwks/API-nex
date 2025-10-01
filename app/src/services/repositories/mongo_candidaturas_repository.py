@@ -1,9 +1,8 @@
 from typing import Any, Dict, List, Optional
 
 from motor.motor_asyncio import AsyncIOMotorClient
-from pymongo.errors import InvalidId
-from pymongo.objectid import ObjectId
 
+from app.src.helpers.object_id import ensure_object_id
 from app.src.helpers.utils import coerce_dates_for_pymongo
 
 
@@ -12,14 +11,20 @@ class MongoCandidaturasRepository:
         self._db = client[db_name]
         self._col = self._db["candidaturas"]
 
+    def _resolve_object_id(self, value: str) -> Any:
+        return ensure_object_id(
+            value,
+            error_message="Invalid candidatura identifier received.",
+            dependency_message=(
+                "ObjectId support is required to query candidaturas using legacy identifiers."
+            ),
+        )
+
     async def get_by_id(self, id: str) -> Optional[Dict[str, Any]]:
         doc = await self._col.find_one({"_id": id})
         if doc:
             return doc
-        try:
-            object_id = ObjectId(id)
-        except InvalidId:
-            return None
+        object_id = self._resolve_object_id(id)
         return await self._col.find_one({"_id": object_id})
 
     async def create(self, data: Dict[str, Any]) -> str:
@@ -35,10 +40,7 @@ class MongoCandidaturasRepository:
         res = await self._col.update_one({"_id": id}, {"$set": payload})
         if res.matched_count:
             return res.modified_count > 0 or bool(payload)
-        try:
-            object_id = ObjectId(id)
-        except InvalidId:
-            return False
+        object_id = self._resolve_object_id(id)
         res = await self._col.update_one({"_id": object_id}, {"$set": payload})
         return res.modified_count > 0 or res.matched_count > 0
 
@@ -46,10 +48,7 @@ class MongoCandidaturasRepository:
         res = await self._col.delete_one({"_id": id})
         if res.deleted_count:
             return True
-        try:
-            object_id = ObjectId(id)
-        except InvalidId:
-            return False
+        object_id = self._resolve_object_id(id)
         res = await self._col.delete_one({"_id": object_id})
         return res.deleted_count > 0
 
