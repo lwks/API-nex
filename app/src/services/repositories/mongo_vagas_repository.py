@@ -1,9 +1,10 @@
 from typing import Any, Dict, List, Optional
 
-from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClient
+from bson.errors import InvalidId
+from bson.objectid import ObjectId
 
-from app.src.helpers.utils import coerce_dates_for_bson
+from app.src.helpers.utils import coerce_dates_for_pymongo
 
 
 class MongoVagasRepository:
@@ -17,23 +18,23 @@ class MongoVagasRepository:
             return doc
         try:
             object_id = ObjectId(id)
-        except Exception:
+        except InvalidId:
             return None
         return await self._col.find_one({"_id": object_id})
 
     async def create(self, data: Dict[str, Any]) -> str:
-        payload = coerce_dates_for_bson(data)
+        payload = coerce_dates_for_pymongo(data)
         res = await self._col.insert_one(payload)
         return str(res.inserted_id)
 
     async def update(self, id: str, data: Dict[str, Any]) -> bool:
-        payload = coerce_dates_for_bson(data)
+        payload = coerce_dates_for_pymongo(data)
         res = await self._col.update_one({"_id": id}, {"$set": payload})
         if res.matched_count:
             return res.modified_count > 0 or bool(payload)
         try:
             object_id = ObjectId(id)
-        except Exception:
+        except InvalidId:
             return False
         res = await self._col.update_one({"_id": object_id}, {"$set": payload})
         return res.modified_count > 0 or res.matched_count > 0
@@ -44,7 +45,7 @@ class MongoVagasRepository:
             return True
         try:
             object_id = ObjectId(id)
-        except Exception:
+        except InvalidId:
             return False
         res = await self._col.delete_one({"_id": object_id})
         return res.deleted_count > 0

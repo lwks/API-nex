@@ -1,9 +1,10 @@
 from typing import Any, Dict, List, Optional
 
-from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClient
+from bson.errors import InvalidId
+from bson.objectid import ObjectId
 
-from app.src.helpers.utils import coerce_dates_for_bson
+from app.src.helpers.utils import coerce_dates_for_pymongo
 
 class MongoCompaniesRepository:
     def __init__(self, client: AsyncIOMotorClient, db_name: str):
@@ -19,12 +20,12 @@ class MongoCompaniesRepository:
             return doc
         try:
             object_id = ObjectId(id)
-        except Exception:
+        except InvalidId:
             return None
         return await self._col.find_one({"_id": object_id})
 
     async def create(self, data: Dict[str, Any]) -> str:
-        payload = coerce_dates_for_bson(data)
+        payload = coerce_dates_for_pymongo(data)
         company_id = payload.pop("id", None)
         if company_id is not None:
             payload["_id"] = company_id
@@ -32,13 +33,13 @@ class MongoCompaniesRepository:
         return str(res.inserted_id)
 
     async def update(self, id: str, data: Dict[str, Any]) -> bool:
-        payload = coerce_dates_for_bson(data)
+        payload = coerce_dates_for_pymongo(data)
         res = await self._col.update_one({"_id": id}, {"$set": payload})
         if res.matched_count:
             return res.modified_count > 0 or bool(payload)
         try:
             object_id = ObjectId(id)
-        except Exception:
+        except InvalidId:
             return False
         res = await self._col.update_one({"_id": object_id}, {"$set": payload})
         return res.modified_count > 0 or res.matched_count > 0
@@ -49,7 +50,7 @@ class MongoCompaniesRepository:
             return True
         try:
             object_id = ObjectId(id)
-        except Exception:
+        except InvalidId:
             return False
         res = await self._col.delete_one({"_id": object_id})
         return res.deleted_count > 0

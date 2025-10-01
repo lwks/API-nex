@@ -1,6 +1,8 @@
-from typing import Sequence, Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any
+
 from motor.motor_asyncio import AsyncIOMotorClient
-from bson import ObjectId
+from bson.errors import InvalidId
+from bson.objectid import ObjectId
 
 class MongoItemsRepository:
     def __init__(self, client: AsyncIOMotorClient, db_name: str):
@@ -10,7 +12,7 @@ class MongoItemsRepository:
     async def get_by_id(self, id: str) -> Optional[Dict[str, Any]]:
         try:
             _id = ObjectId(id)
-        except Exception:
+        except InvalidId:
             return None
         return await self._col.find_one({"_id": _id})
 
@@ -21,7 +23,7 @@ class MongoItemsRepository:
     async def update(self, id: str, data: Dict[str, Any]) -> bool:
         try:
             _id = ObjectId(id)
-        except Exception:
+        except InvalidId:
             return False
         res = await self._col.update_one({"_id": _id}, {"$set": data})
         return res.modified_count > 0
@@ -29,7 +31,7 @@ class MongoItemsRepository:
     async def delete(self, id: str) -> bool:
         try:
             _id = ObjectId(id)
-        except Exception:
+        except InvalidId:
             return False
         res = await self._col.delete_one({"_id": _id})
         return res.deleted_count > 0
