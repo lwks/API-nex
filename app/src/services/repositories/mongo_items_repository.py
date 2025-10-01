@@ -1,8 +1,9 @@
 from typing import Optional, List, Dict, Any
 
 from motor.motor_asyncio import AsyncIOMotorClient
-from bson.errors import InvalidId
-from bson.objectid import ObjectId
+
+from pymongo.errors import InvalidId
+from pymongo.objectid import ObjectId
 
 class MongoItemsRepository:
     def __init__(self, client: AsyncIOMotorClient, db_name: str):

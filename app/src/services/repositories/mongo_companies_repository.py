@@ -1,8 +1,9 @@
 from typing import Any, Dict, List, Optional
 
 from motor.motor_asyncio import AsyncIOMotorClient
-from bson.errors import InvalidId
-from bson.objectid import ObjectId
+
+from pymongo.errors import InvalidId
+from pymongo.objectid import ObjectId
 
 from app.src.helpers.utils import coerce_dates_for_pymongo
 
