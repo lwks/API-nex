@@ -64,8 +64,9 @@ class FormatData:
             social_links=social_links,
             logo_url=doc["logo_url"],
             created_at=created_at_value,
-            updated_at=updated_at_value,
-
+            updated_at=updated_at_value)
+    
+    @staticmethod
     def vaga_out(doc: dict) -> VagaOut:
         """Normalize a persistence document into ``VagaOut`` payload."""
         vaga_id = str(doc.get("_id") or doc.get("id"))
