@@ -1,6 +1,8 @@
 from typing import Optional, Dict, Any
+
 from motor.motor_asyncio import AsyncIOMotorClient
-from bson import ObjectId
+from pymongo.errors import InvalidId
+from pymongo.objectid import ObjectId
 
 
 class MongoUsersRepository:
@@ -11,7 +13,7 @@ class MongoUsersRepository:
     async def get_by_id(self, id: str) -> Optional[Dict[str, Any]]:
         try:
             _id = ObjectId(id)
-        except Exception:
+        except InvalidId:
             return None
         return await self._col.find_one({"_id": _id})
 
