@@ -45,7 +45,7 @@ async def test_candidaturas_controller_crud_flow():
     app = FastAPI()
     svc = FakeService()
     app.dependency_overrides[get_candidaturas_service] = lambda: svc
-    app.include_router(router, prefix="/api/v1/candidaturas")
+    app.include_router(router, prefix="/api/v1/applications")
 
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
@@ -74,25 +74,25 @@ async def test_candidaturas_controller_crud_flow():
             "updated_at": "2024-01-10T10:00:00",
         }
 
-        resp = await ac.post("/api/v1/candidaturas", json=payload)
+        resp = await ac.post("/api/v1/applications", json=payload)
         assert resp.status_code == 200
         assert resp.json() == "comp_001"
 
-        resp = await ac.get("/api/v1/candidaturas/comp_001")
+        resp = await ac.get("/api/v1/applications/comp_001")
         assert resp.status_code == 200
         assert resp.json()["name"] == "Tech Corp"
 
-        resp = await ac.get("/api/v1/candidaturas")
+        resp = await ac.get("/api/v1/applications")
         assert resp.status_code == 200
         assert len(resp.json()) == 1
 
         resp = await ac.put(
-            "/api/v1/candidaturas/comp_001",
+            "/api/v1/applications/comp_001",
             json={"size": "101-200"},
         )
         assert resp.status_code == 200
         assert resp.json() is True
 
-        resp = await ac.delete("/api/v1/candidaturas/comp_001")
+        resp = await ac.delete("/api/v1/applications/comp_001")
         assert resp.status_code == 200
         assert resp.json() is True
