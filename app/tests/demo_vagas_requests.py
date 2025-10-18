@@ -72,6 +72,7 @@ async def run_demo() -> None:
         "publicada_em": "2024-03-10",
         "status": "Aberta",
         "skills": ["Python", "AWS", "Testes"],
+        "orcamento": {"valor_inicial": 6000.0, "valor_final": 9000.0},
     }
 
     async with AsyncClient(transport=transport, base_url="http://test") as client:

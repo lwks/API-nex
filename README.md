@@ -87,6 +87,7 @@ curl -X GET http://localhost:8000/api/v1/companies | jq
 | `publicada_em`  | date   | Publication date (ISO 8601, e.g. `2024-03-10`)                            |
 | `status`        | string | Current status (e.g. Open, Closed, Under review)                          |
 | `skills`        | array  | Desired skills (e.g. `["Python", "AWS", "Testing"]`)                      |
+| `orcamento`     | object | Budget range with `valor_inicial` and `valor_final` (numeric values)     |
 
 
 ## Structure

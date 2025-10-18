@@ -54,6 +54,7 @@ async def test_vagas_controller_crud_flow():
             "publicada_em": "2024-03-10",
             "status": "Aberta",
             "skills": ["Python", "AWS"],
+            "orcamento": {"valor_inicial": 5000.0, "valor_final": 8000.0},
         }
 
         resp = await ac.post("/api/v1/vagas", json=payload)

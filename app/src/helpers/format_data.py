@@ -87,5 +87,5 @@ class FormatData:
             publicada_em=publicada_em_value,
             status=doc["status"],
             skills=doc.get("skills", []),
-
+            orcamento=doc["orcamento"],
         )

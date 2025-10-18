@@ -45,6 +45,7 @@ async def test_vagas_service_crud_flow():
             publicada_em="2024-03-10",
             status="Aberta",
             skills=["Python", "SQL"],
+            orcamento={"valor_inicial": 5500.0, "valor_final": 7500.0},
         )
     )
 
@@ -52,6 +53,7 @@ async def test_vagas_service_crud_flow():
 
     fetched = await svc.get(vaga_id)
     assert fetched and fetched["titulo"] == "Analista de Dados"
+    assert fetched["orcamento"]["valor_inicial"] == 5500.0
 
     updated = await svc.update(vaga_id, VagaUpdate(status="Fechada"))
     assert updated
