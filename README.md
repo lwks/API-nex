@@ -84,6 +84,7 @@ curl -X GET http://localhost:8000/api/v1/companies | jq
 | `descricao`     | string | Detailed description of the activities                                   |
 | `nivel`         | string | Job level (e.g. Junior, Mid, Senior)                                     |
 | `localizacao`   | string | Job location (city/state or `Remote`)                                    |
+| `modelo_trabalho` | string | Working model (e.g. Remote, Hybrid, Onsite)                              |
 | `publicada_em`  | date   | Publication date (ISO 8601, e.g. `2024-03-10`)                            |
 | `status`        | string | Current status (e.g. Open, Closed, Under review)                          |
 | `skills`        | array  | Desired skills (e.g. `["Python", "AWS", "Testing"]`)                      |

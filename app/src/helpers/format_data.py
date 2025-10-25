@@ -84,6 +84,7 @@ class FormatData:
             descricao=doc["descricao"],
             nivel=doc["nivel"],
             localizacao=doc["localizacao"],
+            modelo_trabalho=doc["modelo_trabalho"],
             publicada_em=publicada_em_value,
             status=doc["status"],
             skills=doc.get("skills", []),

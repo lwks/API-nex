@@ -2,15 +2,15 @@ from typing import Any, Dict, List
 
 from app.src.domain.repositories import RepositoryProtocol
 from app.src.helpers.custom_exception import InvalidIdentifierError
-from app.src.models.vaga import VagaCreate, VagaUpdate
+from app.src.models.vaga import VagaUpdate
 
 
 class VagasService:
     def __init__(self, repo: RepositoryProtocol):
         self.repo = repo
 
-    async def create(self, payload: VagaCreate) -> str:
-        data = payload.model_dump()
+    async def create(self, payload: Dict[str, Any]) -> str:
+        data = dict(payload)
         return await self.repo.create(data)
 
     async def get(self, vaga_id: str) -> Dict[str, Any] | None:

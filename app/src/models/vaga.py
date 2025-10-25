@@ -15,14 +15,11 @@ class VagaBase(APIModel):
     descricao: str
     nivel: str
     localizacao: str
+    modelo_trabalho: str
     publicada_em: date
     status: str
     skills: List[str]
     orcamento: VagaOrcamento
-
-
-class VagaCreate(VagaBase):
-    pass
 
 
 class VagaUpdate(APIModel):
@@ -31,6 +28,7 @@ class VagaUpdate(APIModel):
     descricao: str | None = None
     nivel: str | None = None
     localizacao: str | None = None
+    modelo_trabalho: str | None = None
     publicada_em: date | None = None
     status: str | None = None
     skills: List[str] | None = None
