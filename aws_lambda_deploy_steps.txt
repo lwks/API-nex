@@ -1,0 +1,67 @@
+AWS Lambda deployment via ZIP (FastAPI + Mangum)
+===============================================
+
+Pré-requisitos
+--------------
+- Python 3.10+ instalado no ambiente local.
+- Pip atualizado (`python -m pip install --upgrade pip`).
+- Virtualenv já provisionado (opcional, mas recomendado).
+- Credenciais AWS configuradas para publicar a função (via AWS CLI ou console).
+
+Passo a passo sugerido (PowerShell)
+----------------------------------
+1. Limpar artefatos prévios (opcional, mas evita resíduos):
+   ```powershell
+   Remove-Item -Recurse -Force package, dist -ErrorAction SilentlyContinue
+   ```
+2. Instalar dependências da aplicação em uma pasta isolada:
+   ```powershell
+   python -m pip install -r app/requirements.txt -t package
+   ```
+3. Copiar o código-fonte e arquivos necessários para a pasta de build:
+   ```powershell
+   New-Item -ItemType Directory -Path dist | Out-Null
+   Copy-Item -Recurse package\* dist\
+   Copy-Item -Recurse app dist\app
+   Copy-Item lambda_function.py dist\
+   ```
+   > Copie também outros arquivos exigidos em tempo de execução (ex.: templates, schemas).
+4. Opcional: remover caches/bytecode para reduzir o tamanho:
+   ```powershell
+   Get-ChildItem -Path dist -Recurse -Include *.pyc,__pycache__ | Remove-Item -Recurse -Force
+   ```
+5. Gerar o ZIP na raiz do projeto:
+   ```powershell
+   Compress-Archive -Path dist\* -DestinationPath api-nex-lambda.zip -Force
+   ```
+6. Fazer o upload do `api-nex-lambda.zip` pelo console AWS ou CLI (`aws lambda update-function-code --function-name <nome> --zip-file fileb://api-nex-lambda.zip`).
+
+Passo a passo alternativo (bash)
+--------------------------------
+```bash
+rm -rf package dist
+python -m pip install -r app/requirements.txt -t package
+mkdir -p dist
+cp -R package/. dist/
+cp -R app dist/
+cp lambda_function.py dist/
+find dist -type d -name "__pycache__" -prune -exec rm -rf {} \;
+find dist -name "*.pyc" -delete
+cd dist && zip -r ../api-nex-lambda.zip . && cd ..
+```
+
+Configuração da função Lambda
+-----------------------------
+- Handler: `lambda_function.handler`
+- Runtime: Python 3.10 (ou compatível com o build local).
+- Memória/Timeout: ajustar conforme a carga (ex.: 512 MB, 30s).
+- Variáveis de ambiente: definir valores usados em `app/src/helpers/settings.py` (ex.: `AWS_REGION`, `DYNAMODB_*`).
+- Permissões IAM: garantir acesso às tabelas DynamoDB configuradas.
+
+Checklist final
+---------------
+- [ ] `lambda_function.py` incluído no ZIP.
+- [ ] Pasta `app/` dentro do ZIP preserva a estrutura original.
+- [ ] Dependências instaladas dentro do ZIP (diretório `dist` antes da compressão deve conter `fastapi`, `mangum`, etc.).
+- [ ] Variáveis de ambiente configuradas no Lambda (não dependemos do `.env`).
+- [ ] Testes locais opcionais: `uvicorn app.src.main:app --reload` para validar rotas antes de empacotar.
