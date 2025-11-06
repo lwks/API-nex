@@ -7,6 +7,7 @@ Pré-requisitos
 - Pip atualizado (`python -m pip install --upgrade pip`).
 - Virtualenv já provisionado (opcional, mas recomendado).
 - Credenciais AWS configuradas para publicar a função (via AWS CLI ou console).
+- Para desenvolvimento local (não necessário no pacote Lambda), instale também `pip install -r app/requirements-dev.txt`.
 
 Passo a passo sugerido (PowerShell)
 ----------------------------------
@@ -62,6 +63,6 @@ Checklist final
 ---------------
 - [ ] `lambda_function.py` incluído no ZIP.
 - [ ] Pasta `app/` dentro do ZIP preserva a estrutura original.
-- [ ] Dependências instaladas dentro do ZIP (diretório `dist` antes da compressão deve conter `fastapi`, `mangum`, etc.).
+- [ ] Dependências instaladas dentro do ZIP a partir de `app/requirements.txt` (sem ferramentas de desenvolvimento).
 - [ ] Variáveis de ambiente configuradas no Lambda (não dependemos do `.env`).
 - [ ] Testes locais opcionais: `uvicorn app.src.main:app --reload` para validar rotas antes de empacotar.

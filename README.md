@@ -6,7 +6,7 @@ Layered FastAPI project with async DynamoDB repositories and REST best practices
 
 ```bash
 python -m venv .venv && source .venv/bin/activate  # Windows: .venv\Scripts\activate
-pip install -r app/requirements.txt
+pip install -r app/requirements.txt -r app/requirements-dev.txt
 cp .env.example .env
 uvicorn app.src.main:app --reload
 ```
