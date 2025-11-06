@@ -1,9 +1,11 @@
+from typing import Any, Dict
+
 import pytest
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 
 from app.src.controllers.vagas_controller import get_vagas_service, router
-from app.src.models.vaga import VagaCreate, VagaUpdate
+from app.src.models.vaga import VagaUpdate
 
 
 class FakeService:
@@ -11,10 +13,10 @@ class FakeService:
         self._data: dict[str, dict] = {}
         self._counter = 0
 
-    async def create(self, payload: VagaCreate) -> str:
+    async def create(self, payload: Dict[str, Any]) -> str:
         self._counter += 1
         vaga_id = f"vaga_{self._counter:03d}"
-        self._data[vaga_id] = {"_id": vaga_id, **payload.model_dump()}
+        self._data[vaga_id] = {"_id": vaga_id, **payload}
         return vaga_id
 
     async def get(self, vaga_id: str):
@@ -48,22 +50,27 @@ async def test_vagas_controller_crud_flow():
         payload = {
             "client_id": "cli_001",
             "titulo": "Analista de Dados",
-            "descricao": "Responsável por relatórios.",
+            "descricao": "Responsavel por relatorios.",
             "nivel": "Senior",
             "localizacao": "Remoto",
+            "modelo_trabalho": "Remoto",
             "publicada_em": "2024-03-10",
             "status": "Aberta",
             "skills": ["Python", "AWS"],
+            "orcamento": {"valor_inicial": 5000.0, "valor_final": 8000.0},
+            "salario_minimo": 5000.0,
         }
 
         resp = await ac.post("/api/v1/vagas", json=payload)
         assert resp.status_code == 200
         vaga_id = resp.json()
         assert vaga_id == "vaga_001"
+        assert svc._data[vaga_id]["salario_minimo"] == 5000.0
 
         resp = await ac.get(f"/api/v1/vagas/{vaga_id}")
         assert resp.status_code == 200
         assert resp.json()["titulo"] == "Analista de Dados"
+        assert resp.json()["modelo_trabalho"] == "Remoto"
 
         resp = await ac.get("/api/v1/vagas")
         assert resp.status_code == 200
@@ -71,10 +78,14 @@ async def test_vagas_controller_crud_flow():
 
         resp = await ac.put(
             f"/api/v1/vagas/{vaga_id}",
-            json={"status": "Fechada", "skills": ["Python", "SQL"]},
+            json={"status": "Fechada", "skills": ["Python", "SQL"], "modelo_trabalho": "Hibrida"},
         )
         assert resp.status_code == 200
         assert resp.json() is True
+
+        resp = await ac.get(f"/api/v1/vagas/{vaga_id}")
+        assert resp.status_code == 200
+        assert resp.json()["modelo_trabalho"] == "Hibrida"
 
         resp = await ac.delete(f"/api/v1/vagas/{vaga_id}")
         assert resp.status_code == 200

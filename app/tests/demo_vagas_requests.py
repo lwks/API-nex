@@ -12,7 +12,7 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.append(str(ROOT_DIR))
 
 from app.src.controllers.vagas_controller import get_vagas_service, router
-from app.src.models.vaga import VagaCreate, VagaUpdate
+from app.src.models.vaga import VagaUpdate
 
 
 class InMemoryVagasService:
@@ -22,10 +22,10 @@ class InMemoryVagasService:
         self._data: Dict[str, Dict[str, Any]] = {}
         self._counter = 0
 
-    async def create(self, payload: VagaCreate) -> str:
+    async def create(self, payload: Dict[str, Any]) -> str:
         self._counter += 1
         vaga_id = f"vaga_{self._counter:03d}"
-        self._data[vaga_id] = {"_id": vaga_id, **payload.model_dump()}
+        self._data[vaga_id] = {"_id": vaga_id, **payload}
         return vaga_id
 
     async def get(self, vaga_id: str) -> Dict[str, Any] | None:
@@ -66,12 +66,15 @@ async def run_demo() -> None:
     payload = {
         "client_id": "cli_001",
         "titulo": "Analista de Dados",
-        "descricao": "Responsável por relatórios e dashboards.",
+        "descricao": "Responsavel por relatorios e dashboards.",
         "nivel": "Senior",
         "localizacao": "Remoto",
+        "modelo_trabalho": "Remoto",
         "publicada_em": "2024-03-10",
         "status": "Aberta",
         "skills": ["Python", "AWS", "Testes"],
+        "orcamento": {"valor_inicial": 6000.0, "valor_final": 9000.0},
+        "beneficios": ["VR", "VT"],
     }
 
     async with AsyncClient(transport=transport, base_url="http://test") as client:

@@ -1,6 +1,6 @@
 import pytest
 
-from app.src.models.vaga import VagaCreate, VagaUpdate
+from app.src.models.vaga import VagaUpdate
 from app.src.services.vagas_service import VagasService
 
 
@@ -36,28 +36,35 @@ async def test_vagas_service_crud_flow():
     svc = VagasService(repo)  # type: ignore[arg-type]
 
     vaga_id = await svc.create(
-        VagaCreate(
-            client_id="cli_001",
-            titulo="Analista de Dados",
-            descricao="Responsável por analisar dados.",
-            nivel="Pleno",
-            localizacao="São Paulo/SP",
-            publicada_em="2024-03-10",
-            status="Aberta",
-            skills=["Python", "SQL"],
-        )
+        {
+            "client_id": "cli_001",
+            "titulo": "Analista de Dados",
+            "descricao": "Responsavel por analisar dados.",
+            "nivel": "Pleno",
+            "localizacao": "Sao Paulo/SP",
+            "modelo_trabalho": "Hibrido",
+            "publicada_em": "2024-03-10",
+            "status": "Aberta",
+            "skills": ["Python", "SQL"],
+            "orcamento": {"valor_inicial": 5500.0, "valor_final": 7500.0},
+            "observacoes": "Aceita candidatos em meio periodo.",
+        }
     )
 
     assert vaga_id == "vaga_001"
 
     fetched = await svc.get(vaga_id)
     assert fetched and fetched["titulo"] == "Analista de Dados"
+    assert fetched["modelo_trabalho"] == "Hibrido"
+    assert fetched["observacoes"] == "Aceita candidatos em meio periodo."
+    assert fetched["orcamento"]["valor_inicial"] == 5500.0
 
-    updated = await svc.update(vaga_id, VagaUpdate(status="Fechada"))
+    updated = await svc.update(vaga_id, VagaUpdate(status="Fechada", modelo_trabalho="Remoto"))
     assert updated
 
     listed = await svc.list()
     assert len(listed) == 1
+    assert listed[0]["modelo_trabalho"] == "Remoto"
 
     deleted = await svc.delete(vaga_id)
     assert deleted

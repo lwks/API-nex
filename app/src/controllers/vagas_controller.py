@@ -1,10 +1,10 @@
-from typing import Callable, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Body, Depends, Query
 
 from app.src.helpers.format_data import FormatData
 from app.src.helpers.pagination import Pagination
-from app.src.models.vaga import VagaCreate, VagaOut, VagaUpdate
+from app.src.models.vaga import VagaOut, VagaUpdate
 from app.src.services.vagas_service import VagasService
 
 router = APIRouter()
@@ -20,7 +20,10 @@ def get_vagas_service() -> VagasService:
 
 
 @router.post("", response_model=str)
-async def create_vaga(payload: VagaCreate, svc: VagasService = Depends(get_vagas_service)) -> str:
+async def create_vaga(
+    payload: Dict[str, Any] = Body(...),
+    svc: VagasService = Depends(get_vagas_service),
+) -> str:
     return await svc.create(payload)
 
 
