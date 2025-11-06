@@ -1,6 +1,6 @@
 # FastAPI Scaffold (NoSQL-ready)
 
-Layered FastAPI project with async MongoDB repository and REST best practices.
+Layered FastAPI project with async DynamoDB repositories and REST best practices.
 
 ## Quickstart
 
